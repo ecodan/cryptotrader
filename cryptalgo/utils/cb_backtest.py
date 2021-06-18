@@ -41,7 +41,8 @@ histories = {
     'LTC': Path('./data/candles/LTC-USD-2021-01-01 00:00:00-2021-06-01 00:00:00-300-candles.csv'),
     'ETH': Path('./data/candles/ETH-USD-2021-01-01 00:00:00-2021-06-01 00:00:00-300-candles.csv'),
     'MATIC': Path('./data/candles/MATIC-USD-2021-01-01 00:00:00-2021-06-01 00:00:00-300-candles.csv'),
-    'BTC': Path('./data/candles/BTC-USD-2021-01-01 00:00:00-2021-06-01 00:00:00-300-candles.csv'),
+    # 'BTC': Path('./data/candles/BTC-USD-2021-01-01 00:00:00-2021-06-01 00:00:00-300-candles.csv'),
+    'BTC': Path('./data/candles/BTC-USD-2021-01-01 00:00:00-2021-06-01 00:00:00-300-candles-inv.csv'),
     'BCH': Path('./data/candles/BCH-USD-2021-01-01 00:00:00-2021-06-01 00:00:00-300-candles.csv'),
     'ZRX': Path('./data/candles/ZRX-USD-2021-01-01 00:00:00-2021-06-01 00:00:00-300-candles.csv'),
     'ATOM': Path('./data/candles/ATOM-USD-2021-01-01 00:00:00-2021-06-01 00:00:00-300-candles.csv'),
@@ -139,6 +140,8 @@ def macd_time_progression_results(key: str, lewm: int = 12, hewm: int = 26, agg_
     dfv[['price_chg','growth']].plot.line(ax=ax)
     plt.show()
 
+    # TODO add graph showing account balance over time
+
 
 if __name__ == '__main__':
-    macd_time_progression_results('MATIC', agg_period=AggPeriod.ONE_DAY)
+    macd_time_progression_results('BTC', agg_period=AggPeriod.ONE_HOUR)

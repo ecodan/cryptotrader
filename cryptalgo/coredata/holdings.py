@@ -1,7 +1,10 @@
 import abc
+import datetime
 import decimal
 from decimal import Decimal
-from typing import Dict
+from typing import Dict, List
+
+import pandas as pd
 
 from cryptalgo.coredata.trades import TradeSide, TradeHistory, Trade
 from cryptalgo.utils.decorators.validation import requires_amount, requires_symbol_and_amount, \
@@ -17,10 +20,23 @@ class FeeModel(metaclass=abc.ABCMeta):
 
 
 class Ledger:
+    class History:
+
+        def __init__(self, symbol: str, amount: Decimal, dir: str, bal: Decimal) -> None:
+            self.date = datetime.datetime.utcnow()
+            self.amount = amount
+            self.direction = dir
+            self.remaining_balance = bal
+            self.symbol = symbol
 
     def __init__(self, name: str) -> None:
         self.name = name
-        self.holdings = {}
+        self.holdings: Dict = {}
+        self.history: List[Ledger.History] = []
+
+
+    def balance_history_as_series(self) -> pd.Series:
+        return pd.Series(index=[x.date for x in self.history], data=[x.remaining_balance for x in self.history])
 
 
     @requires_symbol_and_amount
@@ -30,6 +46,7 @@ class Ledger:
         with decimal.localcontext() as ctx:
             ctx.prec = 5
             self.holdings[symbol] += Decimal(amount)
+            self.history.append(Ledger.History(symbol, Decimal(amount), "add", self.holdings[symbol]))
 
 
     @requires_symbol_and_amount
@@ -42,6 +59,7 @@ class Ledger:
         with decimal.localcontext() as ctx:
             ctx.prec = 5
             self.holdings[symbol] -= Decimal(amount)
+            self.history.append(Ledger.History(symbol, Decimal(amount), "remove", self.holdings[symbol]))
 
 
 
